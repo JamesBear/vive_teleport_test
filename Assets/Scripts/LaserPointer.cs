@@ -12,11 +12,13 @@ public struct PointerEventArgs
 public delegate void PointerEventHandler(object sender, PointerEventArgs e);
 
 
-public class SteamVR_LaserPointer : MonoBehaviour
+public class LaserPointer : MonoBehaviour
 {
+    public const float DEFAULT_LASER_LENGTH = 100;
+
     public bool active = true;
-    public Color color;
-    public float thickness = 0.002f;
+    public Color color = new Color(0, 1, 33f/255);
+    public float thickness = 0.003f;
     public GameObject holder;
     public GameObject pointer;
     bool isActive = false;
@@ -24,6 +26,7 @@ public class SteamVR_LaserPointer : MonoBehaviour
     public Transform reference;
     public event PointerEventHandler PointerIn;
     public event PointerEventHandler PointerOut;
+    public GameObject marker;
 
     Transform previousContact = null;
 
@@ -33,11 +36,13 @@ public class SteamVR_LaserPointer : MonoBehaviour
         holder = new GameObject();
         holder.transform.parent = this.transform;
         holder.transform.localPosition = Vector3.zero;
+        holder.transform.localRotation = Quaternion.identity;
 
         pointer = GameObject.CreatePrimitive(PrimitiveType.Cube);
         pointer.transform.parent = holder.transform;
-        pointer.transform.localScale = new Vector3(thickness, thickness, 100f);
+        pointer.transform.localScale = new Vector3(thickness, thickness, DEFAULT_LASER_LENGTH);
         pointer.transform.localPosition = new Vector3(0f, 0f, 50f);
+        
         BoxCollider collider = pointer.GetComponent<BoxCollider>();
         if (addRigidBody)
         {
@@ -102,6 +107,8 @@ public class SteamVR_LaserPointer : MonoBehaviour
             args.target = previousContact;
             OnPointerOut(args);
             previousContact = null;
+
+            
         }
         if(bHit && previousContact != hit.transform)
         {
@@ -115,7 +122,15 @@ public class SteamVR_LaserPointer : MonoBehaviour
             argsIn.target = hit.transform;
             OnPointerIn(argsIn);
             previousContact = hit.transform;
+            
+            Debug.Log(string.Format("Hit {0} at {1}", hit.transform.name, hit.point));
         }
+
+        if (bHit && marker)
+        {
+            marker.transform.position = hit.point;
+        }
+
         if(!bHit)
         {
             previousContact = null;
@@ -128,11 +143,17 @@ public class SteamVR_LaserPointer : MonoBehaviour
         if (controller != null && controller.triggerPressed)
         {
             pointer.transform.localScale = new Vector3(thickness * 5f, thickness * 5f, dist);
+            OnTriggerPressed();
         }
         else
         {
             pointer.transform.localScale = new Vector3(thickness, thickness, dist);
         }
         pointer.transform.localPosition = new Vector3(0f, 0f, dist/2f);
+    }
+
+    void OnTriggerPressed()
+    {
+        GameObject.Find("Game").GetComponent<Game>().OnTriggerPressed();
     }
 }

@@ -16,12 +16,12 @@ public class Game : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if (Input.GetButtonUp("LeftMouse"))
-        {
-            OnLeftClick();
-        }
+	    //if (Input.GetButtonUp("LeftMouse"))
+     //   {
+     //       OnLeftClick();
+     //   }
 
-        OnLeftClick();
+     //   OnLeftClick();
 
         if (debugText)
         {
@@ -65,5 +65,25 @@ public class Game : MonoBehaviour {
                 marker.transform.position = hitInfo.point;
             }
         }
+    }
+
+    public void OnTriggerPressed()
+    {
+        AdoptPhantomsView();
+    }
+
+    void AdoptPhantomsView()
+    {
+        var cameraRig = Camera.main.transform.parent;
+        var phantom = GameObject.Find("ShawdowMaster").transform;
+        var camera = Camera.main.transform;
+
+        var rigPos = phantom.position - camera.localPosition;
+        rigPos.y = 0;
+        cameraRig.position = rigPos;
+
+        var rigRot = Quaternion.FromToRotation(camera.forward, phantom.forward);
+        cameraRig.rotation = rigRot;
+
     }
 }
