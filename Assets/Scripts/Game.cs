@@ -82,8 +82,8 @@ public class Game : MonoBehaviour {
         rigPos.y = 0;
         cameraRig.position = rigPos;
 
-        var rigRot = Quaternion.FromToRotation(camera.forward, phantom.forward);
-        cameraRig.rotation = rigRot;
+
+        cameraRig.rotation = phantom.rotation * Quaternion.Inverse(camera.localRotation);
 
     }
 }
