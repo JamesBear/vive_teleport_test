@@ -8,10 +8,11 @@ public class Game : MonoBehaviour {
     public GameObject marker;
 
     Ray lastRay;
+    PhantomMotor phantom;
 
 	// Use this for initialization
 	void Start () {
-	    
+        phantom = GameObject.Find("ShadowMaster").GetComponent<PhantomMotor>();
 	}
 	
 	// Update is called once per frame
@@ -72,18 +73,28 @@ public class Game : MonoBehaviour {
         AdoptPhantomsView();
     }
 
+    public void OnPadPressed()
+    {
+        phantom.activated = !phantom.activated;
+    }
+
     void AdoptPhantomsView()
     {
-        var cameraRig = Camera.main.transform.parent;
-        var phantom = GameObject.Find("ShawdowMaster").transform;
-        var camera = Camera.main.transform;
-
-        var rigPos = phantom.position - camera.localPosition;
-        rigPos.y = 0;
-        cameraRig.position = rigPos;
+        //if (phantom.activated)
+        {
 
 
-        cameraRig.rotation = phantom.rotation * Quaternion.Inverse(camera.localRotation);
+            var cameraRig = Camera.main.transform.parent;
+            var phantomTrans = phantom.transform;
+            var camera = Camera.main.transform;
 
+            var rigPos = phantomTrans.position - camera.localPosition;
+            rigPos.y = 0;
+            cameraRig.position = rigPos;
+
+
+            cameraRig.rotation = phantomTrans.rotation * Quaternion.Inverse(camera.localRotation);
+            phantom.activated = false;
+        }
     }
 }

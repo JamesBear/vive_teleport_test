@@ -63,7 +63,16 @@ public class LaserPointer : MonoBehaviour
         Material newMaterial = new Material(Shader.Find("Unlit/Color"));
         newMaterial.SetColor("_Color", color);
         pointer.GetComponent<MeshRenderer>().material = newMaterial;
-	}
+
+
+        SteamVR_TrackedController controller = GetComponent<SteamVR_TrackedController>();
+
+        if (controller)
+        {
+            controller.TriggerClicked += (sender, args) => OnTriggerPressed();
+            controller.PadClicked += (sender, args) => GameObject.Find("Game").GetComponent<Game>().OnPadPressed();
+        }
+    }
 
     public virtual void OnPointerIn(PointerEventArgs e)
     {
@@ -143,13 +152,13 @@ public class LaserPointer : MonoBehaviour
         if (controller != null && controller.triggerPressed)
         {
             pointer.transform.localScale = new Vector3(thickness * 5f, thickness * 5f, dist);
-            OnTriggerPressed();
         }
         else
         {
             pointer.transform.localScale = new Vector3(thickness, thickness, dist);
         }
         pointer.transform.localPosition = new Vector3(0f, 0f, dist/2f);
+        
     }
 
     void OnTriggerPressed()

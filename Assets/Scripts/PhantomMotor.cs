@@ -4,6 +4,19 @@ using System.Collections;
 public class PhantomMotor : MonoBehaviour {
 
     public GameObject target;
+    private bool _activated = false;
+    public bool activated
+    {
+        get
+        {
+            return _activated;
+        }
+        set
+        {
+            _activated = value;
+            StopRunning();
+        }
+    }
 
     Animator anim;
 
@@ -29,7 +42,7 @@ public class PhantomMotor : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if (target != null)
+	    if (target != null && activated)
         {
             Vector3 targetPos = target.transform.position;
             targetPos.y = transform.position.y;
