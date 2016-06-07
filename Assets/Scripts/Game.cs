@@ -6,6 +6,7 @@ public class Game : MonoBehaviour {
 
     public Text debugText;
     public GameObject marker;
+    public TweenAlpha tweener;
 
     Ray lastRay;
     PhantomMotor phantom;
@@ -70,7 +71,10 @@ public class Game : MonoBehaviour {
 
     public void OnTriggerPressed()
     {
-        AdoptPhantomsView();
+        if (tweener.GetState() == TweenAlpha.State.In || tweener.GetState() == TweenAlpha.State.Out)
+        {
+            tweener.StartFadeIn(0.5f, AdoptPhantomsView);
+        }
     }
 
     public void OnPadPressed()
@@ -80,21 +84,18 @@ public class Game : MonoBehaviour {
 
     void AdoptPhantomsView()
     {
-        //if (phantom.activated)
-        {
+        var cameraRig = Camera.main.transform.parent;
+        var phantomTrans = phantom.transform;
+        var camera = Camera.main.transform;
+
+        var rigPos = phantomTrans.position - camera.localPosition;
+        rigPos.y = 0;
+        cameraRig.position = rigPos;
 
 
-            var cameraRig = Camera.main.transform.parent;
-            var phantomTrans = phantom.transform;
-            var camera = Camera.main.transform;
+        cameraRig.rotation = phantomTrans.rotation * Quaternion.Inverse(camera.localRotation);
+        phantom.activated = false;
 
-            var rigPos = phantomTrans.position - camera.localPosition;
-            rigPos.y = 0;
-            cameraRig.position = rigPos;
-
-
-            cameraRig.rotation = phantomTrans.rotation * Quaternion.Inverse(camera.localRotation);
-            phantom.activated = false;
-        }
+        tweener.StartFadeOut(0.5f, null);
     }
 }
