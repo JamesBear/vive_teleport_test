@@ -73,6 +73,8 @@ public class Game : MonoBehaviour {
     {
         if (tweener.GetState() == TweenAlpha.State.In || tweener.GetState() == TweenAlpha.State.Out)
         {
+            phantom.StopImmediately();
+            phantom.SetMovable(false);
             tweener.StartFadeIn(0.5f, AdoptPhantomsView);
         }
     }
@@ -99,6 +101,6 @@ public class Game : MonoBehaviour {
         var rigPos = targetPos + phantomTrans.forward*0.1f - relativePos;
         cameraRig.position = rigPos;
 
-        tweener.StartFadeOut(0.5f, null);
+        tweener.StartFadeOut(0.5f, () => phantom.SetMovable(true));
     }
 }

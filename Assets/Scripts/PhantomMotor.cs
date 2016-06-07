@@ -35,9 +35,19 @@ public class PhantomMotor : MonoBehaviour {
         anim.SetFloat("Forward", 0);
     }
 
+    public void StopImmediately()
+    {
+        anim.CrossFade("Idle", 0f);
+    }
+
     void StartRunning()
     {
         anim.SetFloat("Forward", 1);
+    }
+
+    public void SetMovable(bool movable)
+    {
+        anim.applyRootMotion = movable;
     }
 	
 	// Update is called once per frame
