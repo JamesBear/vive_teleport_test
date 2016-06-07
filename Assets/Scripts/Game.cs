@@ -88,13 +88,16 @@ public class Game : MonoBehaviour {
         var phantomTrans = phantom.transform;
         var camera = Camera.main.transform;
 
-        var rigPos = phantomTrans.position - camera.localPosition;
-        rigPos.y = 0;
-        cameraRig.position = rigPos;
-
 
         cameraRig.rotation = phantomTrans.rotation * Quaternion.Inverse(camera.localRotation);
         phantom.activated = false;
+
+        var relativePos = cameraRig.TransformPoint(camera.localPosition) - cameraRig.position;
+
+        var targetPos = phantomTrans.position;
+        targetPos.y = 2.25f;
+        var rigPos = targetPos + phantomTrans.forward*0.1f - relativePos;
+        cameraRig.position = rigPos;
 
         tweener.StartFadeOut(0.5f, null);
     }
