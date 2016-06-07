@@ -40,7 +40,7 @@ public class TweenAlpha : MonoBehaviour {
         else if (state == State.FadingOut)
         {
             float t = (Time.time - startTime) / fadeLength;
-            Apply(t);
+            Apply(1-t);
             if (t >= 1)
             {
                 OnFadeOutEnd();
@@ -88,7 +88,7 @@ public class TweenAlpha : MonoBehaviour {
         state = State.FadingOut;
         fadeLength = duration;
         startTime = Time.time;
-        sprite.gameObject.SetActive(false);
+        sprite.gameObject.SetActive(true);
         Apply(1);
     }
 
